@@ -70,7 +70,8 @@ Note: If you are not interested in allowing `All Traffic` to your EC2 instance
       1. Delete the inbound traffic rule for your instance
       2. Edit the inbound traffic rule to only allow custom TCP port `8080`
   
-After you login to Jenkins, 
+After you login to Jenkins UI, 
+      - username: admin
       - Run the command to copy the Jenkins Admin Password - `sudo cat /var/lib/jenkins/secrets/initialAdminPassword`
       - Enter the Administrator password
       
@@ -130,6 +131,12 @@ http://<ec2-instance-public-ip>:8080/restart
 ```
 
 The docker agent configuration is now successful.
+
+### create a pipeline
+
+go to manage Jenkins >> credentials >> system >> global credential >> add credential >> (add SonarQube authentication here )
+in Add credential >> Select kind : secret file >>  add describe and fill details and save
+
 
 
 

@@ -1,0 +1,218 @@
+steps for CICD pipeline
+
+#Execute the application locally and access it using your browser
+#Checkout the repo and move to the directory
+
+git clone https://github.com/iam-veeramalla/Jenkins-Zero-To-Hero/java-maven-sonar-argocd-helm-k8s/sprint-boot-app
+cd java-maven-sonar-argocd-helm-k8s/sprint-boot-app
+
+#Execute the Maven targets to generate the artifacts
+
+mvn clean package
+
+#The above maven target stroes the artifacts to the target directory. 
+#You can either execute the artifact on your local machine (or) run it as a Docker container.
+
+** Note: To avoid issues with local setup, Java versions and other dependencies, I would recommend the docker way. **
+
+#Execute locally (Java 11 needed) and access the application on http://localhost:8080
+
+java -jar target/spring-boot-web.jar
+
+#The Docker way, Build the Docker Image
+
+docker build -t ultimate-cicd-pipeline:v1 .
+docker run -d -p 8010:8080 -t ultimate-cicd-pipeline:v1
+
+
+
+****EC2
+
+
+
+****JENKINS
+
+install
+
+
+Jenkins UI in browser at http://<public_ip>:8080/
+username: admin
+password: sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+
+
+
+
+
+
+
+****SonarQube (installed on EC2)
+
+adduser sonarqube
+sudo su - sonarqube
+wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.4.0.54424.zip
+unzip *
+chmod -R 755 /home/sonarqube/sonarqube-9.4.0.54424
+chown -R sonarqube:sonarqube /home/sonarqube/sonarqube-9.4.0.54424
+cd sonarqube-9.4.0.54424/bin/linux-x86-64/
+#starting the SonarQube UI on 
+./sonar.sh start
+
+Hurray !! Now you can access the SonarQube Server on http://<ip-address>:9000
+open SonarQube in  new browser : >> https://<PublicIP>:9000
+user: admin and password: admin
+reset the password: admin1
+
+Go to Administrator >> Seurity >> Generate token
+New token "jenkins_userToken" has been created. Make sure you copy it now, you won't be able to see it again!
+token: squ_f82238e984ab5c8f5fa910f2d2b19916e5c778b3
+copy the token
+
+New token "jenkins_globalAnalysisToken" has been created. Make sure you copy it now, you won't be able to see it again!
+token: sqa_1a9dc22113d89c1c22a1f7c8ae6a4e32124fd85e
+copy the token
+
+Go to Jenkins:
+After you login to Jenkins, -
+Run the command to copy the Jenkins Admin Password -
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword - 
+username: admin
+Enter the Administrator password: 4260312c14c249b981fd0152030d337c
+
+go to >> manage Jenkins >> credentials >> system >> global credential >> add credential >> (add SonarQube authentication here )
+in Add credential >> Select kind : secret file >>  add describe and fill details and save
+
+
+Docker: (installed on EC2)
+
+exit from SonarQube user login
+as root or sudo user 
+
+1.	Run the below command to Install Docker
+
+sudo apt update
+sudo apt install docker.io
+
+2. Grant Jenkins user and Ubuntu user permission to docker deamon.
+Note: Docker user must be same as Jenkins 
+sudo su - 
+sudo usermod -aG docker jenkins
+sudo usermod -aG docker ubuntu #here ubuntu is user. you can use $USER instead of ubuntu
+systemctl restart docker
+systemctl restart jenkins
+systemctl status docker
+systemctl status jenkins
+#verify the group and you must see docker in the list 
+groups jenkins
+
+
+Once you are done with the above steps, it is better to restart Jenkins. 
+you can run below command in browser
+http://<ec2-instance-public-ip>:8080/restart
+The docker agent configuration is now successful.
+
+
+
+
+MINIKUBE-kubernetes (not installed on EC2)
+
+open a project directory in local machine 
+
+1.	Run below commands
+
+minikube version 
+kubectl version --client
+minikube start --memory=4098 --driver=docker
+
+output --------
+Verifying Kubernetes components ...
+. Using image gcr. io/k8s-minikube/storage-provisioner:v5
+Enabled addons: storage-provisioner, default-storageclass
+Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+
+
+
+AGROCD (not installed on EC2)
+
+browse search operatorhub in google. search argocd and install. step given as below 
+Note: can you other version of OLM tool which are compactible with your installed Kubernetes
+
+1.	Install Operator Lifecycle Manager (OLM), a tool to help manage the Operators running on your cluster.
+
+$ curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.32.0/install.sh | bash -s v0.32.0
+
+2. Install the operator by running the following command:What happens when I execute this command?
+
+$ kubectl create -f https://operatorhub.io/install/argocd-operator.yaml
+
+This Operator will be installed in the "operators" namespace and will be usable from all namespaces in the cluster.
+
+3. After install, watch your operator come up using next command.
+
+$ kubectl get csv -n operators
+
+
+-----------Alternate approach------
+reference: https://devopscube.com/setup-argo-cd-using-helm/#argocd-setup-using-manifest-files
+
+kubectl create namespace argocd
+
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+To login to the UI, you need a username: admin  and password using below command: 
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode ; echo
+
+
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+#It binds your local port 8080 to the ArgoCD server service’s port 443, and WAITS indefinitely — 
+#this is expected behavior. It doesn’t “complete” — it just stays running and starts forwarding traffic.
+#No success message is printed unless there's an error.
+#Once port-forwarding starts, it just sits there silently.
+#The ArgoCD UI is now accessible at:
+#Open your browser and go to:
+https://localhost:8080
+Ignore the security warning (because the certificate is self-signed) and proceed.
+
+Login credentials: 
+Username: admin
+Password: The initial password is stored in a Kubernetes secret.
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
+
+kubectl get svc -n argocd
+kubect edit svc argocd-server -n argocd 
+#change service type from clusterip to nodeport
+
+minikube service argocd-server
+minikube service argocd-server -n argocd
+minikube service list
+kubectl get pods
+kubectl get pods -n argocd
+kubectl get secret
+kubectl get secret -n argocd
+kubectl edit secrets argocd-initial-admin-secret -n argocd
+#copy admin password to decode in base64 and Edit cancelled, no changes made.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
