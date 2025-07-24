@@ -274,7 +274,9 @@ Username: admin
 Password: The initial password is stored in a Kubernetes secret.
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
+----end---
 
+these command are for troubleshooting 
 kubectl get svc -n argocd
 kubect edit svc argocd-server -n argocd
 #change service type from clusterip to nodeport
