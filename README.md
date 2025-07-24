@@ -291,6 +291,7 @@ kubectl edit secrets argocd-initial-admin-secret -n argocd
 
 
 ♦♦♦ Addition change jenkins pipeline:
+-- create new clone and update the git repo in jenkins 
 -- validate docker iimage is downloable
 -- update giturl in "checkout" task 
 -- update token and credential id in sonarqube task 
@@ -301,6 +302,7 @@ kubectl edit secrets argocd-initial-admin-secret -n argocd
 
 
 ♦♦♦Troubleshoot: 
+
 
 ✅ disk full issue in Jenkins 
 sudo rm -rf /var/lib/jenkins/workspace/*
@@ -352,6 +354,10 @@ Expected output:
 Filesystem      Size  Used Avail Use% Mounted on
 /dev/root        20G  6.0G   14G  30% /
  
+
+ ✅ sonarqube running on port 80 instead of 9000
+
+
 
 
 

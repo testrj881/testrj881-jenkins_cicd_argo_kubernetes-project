@@ -12,6 +12,8 @@ pipeline {
         //git branch: 'main', url: 'https://github.com/testrj881/testrj881-jenkins_cicd_argo_kubernetes-project.git'
       }
     }
+
+
     stage('Build and Test') {
       steps {
         sh 'ls -ltr'
@@ -19,16 +21,23 @@ pipeline {
         sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
       }
     }
+      /*
+    
     stage('Static Code Analysis') {
       environment {
-        SONAR_URL = "http://13.200.252.186/:9000"
+        SONAR_URL = "http://13.200.252.186:9000"
       }
       steps {
         withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-          sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
+          sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=$SONAR_URL'
         }
       }
     }
+      
+      */
+   
+
+      /*
     stage('Build and Push Docker Image') {
       environment {
         DOCKER_IMAGE = "abhishekf5/ultimate-cicd:${BUILD_NUMBER}"
@@ -45,6 +54,10 @@ pipeline {
         }
       }
     }
+   
+      */
+    
+      /*
     stage('Update Deployment File') {
         environment {
             GIT_REPO_NAME = "testrj881-jenkins_cicd_argo_kubernetes-project"
@@ -64,5 +77,7 @@ pipeline {
             }
         }
     }
+
+      */
   }
 }
