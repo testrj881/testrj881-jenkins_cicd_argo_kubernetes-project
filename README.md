@@ -290,7 +290,7 @@ kubectl edit secrets argocd-initial-admin-secret -n argocd
 #copy admin password to decode in base64 and Edit cancelled, no changes made.
 
 
-♦♦♦ Addition change jenkins pipeline:
+✅✅✅✅ Addition change jenkins pipeline:
 -- create new clone and update the git repo in jenkins 
 -- validate docker iimage is downloable
 -- update giturl in "checkout" task 
@@ -299,9 +299,19 @@ kubectl edit secrets argocd-initial-admin-secret -n argocd
 
 -- push the change in the testrj881 repo. 
 
+Step 1: Create a New Docker Repository on Docker Hub
+Go to https://hub.docker.com
+Create a public or private repository Example: your-dockerhub-username/your-repo-name
+
+Step 2: Add Your Docker Hub Credentials in Jenkins
+Jenkins Dashboard → Manage Jenkins → Manage Credentials → Choose scope: (global) → Global credentials → Click "Add Credentials"
+select: Kind: Username and password
+Username: your Docker Hub username (e.g., rjtestuser)
+Password: your Docker Hub password (or access token)
+ID: token_repo_dockerregistry 
 
 
-♦♦♦Troubleshoot: 
+✅✅✅✅ Troubleshoot: 
 
 
 ✅ disk full issue in Jenkins 
