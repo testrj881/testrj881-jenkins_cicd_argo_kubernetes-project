@@ -37,7 +37,7 @@ pipeline {
       
    
 
-      /*
+      
     stage('Build and Push Docker Image') {
       environment {
         DOCKER_IMAGE = "abhishekf5/ultimate-cicd:${BUILD_NUMBER}"
@@ -55,7 +55,7 @@ pipeline {
       }
     }
    
-      */
+      
     
       /*
     stage('Update Deployment File') {
