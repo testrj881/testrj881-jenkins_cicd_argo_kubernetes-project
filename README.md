@@ -219,7 +219,7 @@ minikube version
 kubectl version --client
 minikube start --memory=4098 --driver=docker
 
-output --------
+-------output --------
 Verifying Kubernetes components ...
 . Using image gcr. io/k8s-minikube/storage-provisioner:v5
 Enabled addons: storage-provisioner, default-storageclass
@@ -269,7 +269,7 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 https://localhost:8080
 Ignore the security warning (because the certificate is self-signed) and proceed.
 
-Login credentials:
+Login credentials for argoCD:
 Username: admin
 Password: The initial password is stored in a Kubernetes secret.
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
