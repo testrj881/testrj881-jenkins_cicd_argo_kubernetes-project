@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: spring-boot-app
-        image: testrj881/testrj_cicd_docker_registry:replaceImageTag
+        image: testrj881/testrj_cicd_docker_registry:28
         ports:
         - containerPort: 8080
