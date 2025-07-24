@@ -57,7 +57,7 @@ pipeline {
    
       
     
-      /*
+      
     stage('Update Deployment File') {
         environment {
             GIT_REPO_NAME = "testrj881-jenkins_cicd_argo_kubernetes-project"
@@ -78,6 +78,6 @@ pipeline {
         }
     }
 
-      */
+      
   }
 }
