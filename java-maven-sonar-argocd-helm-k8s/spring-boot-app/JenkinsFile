@@ -61,7 +61,7 @@ pipeline {
     stage('Update Deployment File') {
         environment {
             GIT_REPO_NAME = "testrj881-jenkins_cicd_argo_kubernetes-project"
-            GIT_USER_NAME = "tesstrj881"
+            GIT_USER_NAME = "testrj881"
         }
         steps {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
